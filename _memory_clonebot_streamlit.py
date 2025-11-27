@@ -1,5 +1,3 @@
-
-import streamlit as st
 import requests
 import json
 import os  # 新增：用于文件操作
@@ -47,111 +45,6 @@ ROLE_MEMORY_MAP = {
 
 # ========== 初始记忆系统 ==========
 
-# ========== ASCII 头像 ==========
-def get_portrait():
-    """返回 ASCII 艺术头像"""
-    return """
-odocccc:::::::cccccccclloodkkkxddxxxxkkkkkkkkkkxxddodxkOO00OOkxddddddddddddddxxxxxxxxxkkkkkOkkkkOOO0
-dxxolcccccccccccccccclloodxkkkxxxxxkkkOOOOOOOOkkxddddkkOOO0OOOkxxdddddddddddxxxxxxxxxkkkkkkOOOOOOOO0
-dxkxolccccccccccccccllloodxkkkkkxxxkkkkOOOOOkkkkxxxxxkkOOOOOOOkkxxxdddddddddxxxxxxxxxkkkkkOkkkkkOOO0
-dxkkxolccccccccccccllooodxxkkkkkkxkkkkkOOOOOkkkkkxxxkkkOOOOOOOOkkkxxdddddddxxxxxxxxxxkOOOkkkxddxkOO0
-xkkkkxolcccccccccllloodddxkkkkkkkkkkkkkOOOOOkkkkxxxxxxxxxkkkkkkkxxxxxxxxxxdxxxxxxxxxkkkOOkxdollodkO0
-xkkkkkxdllccccccllloodddxxkkkkkkkkkkkkOOOOOkkkxxxddddddxxxkkkkxxxxxxxxxxxxxxddddddxxkkkOkxddolllldkO
-kkkkkkkkdolllllllloodddxxkkkkkkkkkkkkkkOOkkkkxxdoooooddxxxxxxxxxxxxxxxxddddddddddxxkkkxxxdoollllcokO
-kkkkkkkkkxolllllloodddxxxkkkkkkkkkkkkkkkkkkkkxdolooddoolllllllooddddddooooooooddxxkkkkdoolcccccccokO
-kkkkkkkkkkxdooooodddddxxkkkkxxxkkkkkkkkkkkkxxdooodddlcccloddddoollcccccclllllloodxxkkxollc::::ccldkO
-kkkkkkkkkkkxdooodddddxxxkkkkkkkkkkkkxxdxxxdolc:cllc:;,;;;:::ccc::;:::::clooooooooooddoclc:::::ccldkO
-kkkkkkkkkkkxxddddddddxxxkkkkkkkkkkxxxdoolc:,''.'''...........''''''',,;;:clddxxxddoc;;:c:::;;:::ldkO
-kkkkkkkkkkkxxdddddddxxxxkkOOOkkxxdddolc:;,'..........      .....''''''''',;cloooool:'.,:;;;;;;;:lxk0
-kkkkkkkkkkkkxdddddddxxxxkkkkkkxdddol:,''.'''''',;:::::;,'.........''''''''',,,,,;;,,''',,;;,,,;:lxO0
-kkkkkkkkkkkkxdddddddxxxkkkkkkxdddoc,.....';codkO00KKK00Okxdl:;'......''''''',,,'....'''...',,,,;lxO0
-kkkkkkkkkkkxxdddddddxxxkkkxxxxdoc;'...';ldO0KKKXXXXXXKKKKKK0Okxo:,.......'''',,,,,'........',,,;ok00
-kkkkkkkkkkkxxdddddddxxxkxxddxdl;....,cdO0KKXXXXXXXXXXXXXXXXKKK0Okdl;'........'',;;;,''......''';dO00
-kkkkkkkkkkkxxdddddddxxxxddddo:....,lk0KKKXXXXXXXXXXXNNNNXXXKKKKK0Okdc,..........,;;;,,'.......';d00K
-kkkkOOOOkkkxxdddddddxxxddddl,...'cx0KKKKKXXXXXXXXXXXXXNNXXXKKKKKK00Okdc'.........,;;,,'.......':x00K
-kkkOOOOOOOkxdddddxxxddxxxdc'...,oO00KKKKKKKKKKXXXXXXXXXXXXXKKKKKKKKK00ko;.........',,,''......':x00K
-kkkkkxkkkkkkxdddxxxddxxxd:'...;dOO00KKKKKKKKKKXXXXXXXXXXXXXXXXKXXKKKK00Od:'........''''.......'ck00K
-kkkkxxxxxdxxxddddddddxxd:....;dkO000KKKKKKKXXXXXXXXXXXXXXXXXXXXXXXXKK000Od:..........''.......'oO00K
-OOOOOkxdddxxxddddxxxxxxc....;okOO0000KKKKKKKKKKKKKKKKKKKKKKKKKXXXXXKKK000Oo;...   ............;x00KK
-OOOOOOkxxxxxddddddxxxxo'...'lkOO000000000KKKK000OkkkxxxxxkkO000KKKKKKKK000ko,..     ..........:k00KK
-OOOOkkkkxxxxddddddxxxd,. ..:xOO000OOOOOOOO000OOkxdooooddxkO0000KKK00000000Okl,.      ....  ...lO00KK
-Okkxxxxxxxxddddddxdxx:.  ..lxxxxdooooodxxkOOOOkxdoooodxOO00KKKKKK00OOO00000Oxc'.     ...     'd000KK
-kxxddddxxxxddddddddxl. ...,loolllllllllodxkkkkkxdddddxxkkkkkkkkOOOOOOO000000Od:..    ...     ;k00KKK
-xddddxddxxdddddddddo,. ...:oodxxxxddoooodkOOOOOkdddddol:;,''',;cldxkkOO00000Oko;.    ..     .cO000KK
-ddddxxddxxdddddddddc. . .'ldxkOOOOkxdoooxO0KKK0Oxdool:;,;;::c::;,;coxkO000000Okl,.          .d0000KK
-xxxxxdddxxxddddoodl'  . .;oxxxdolccccllok0KXXXKK0kkdolclodddxkkOkkkkO0KKKKK00OOxc.          ,k0000KK
-ddddddddxxdddddddo;.  . .:ooc;'''',,;cok0KXXXXXKKKK0OkxddddxkO0KKXXXXXXXKKKK00Okl,.         cO000KKK
-oodddddxxxdddoodd:.     .cl:;:cllllloxk0KXXXXKXXXXXXXXXKKKKKXXXXXXXXXXXXXKKK0OOko;.        .o0000KKK
-oodddddxxxddodddl'      .cccodoolodxO00KKXXKKKKKKKKKKXXXXXXXXXXXXXXXXXXKKKK00Okxo;.        ,x0000KKK
-oddddddxxdddoodl,.      ,oxOOOO000K0000KKKKKKKKK0OkkO0KKXXXXXXXXXXXXKKKKK000Okkdl,.        :O0000K00
-oddddddddddoooo;..     .o0KKKKKKK0OOOOkkkkkkO0KKK0OkxxO0KKKXXXXXXKKKKKK00OOOkxxdc,.       .oO0000000
-ddddddddxddooo:...    .c0KKKKKK0OkkkxdollllllodxkkxxxxxkO0KKKKKKKKKK000OOOkkxddo:'.       ,xO0000000
-ddxdddddddoooc...     'kKKKK000Okxdo:;,;;;;,'.';:cldkOkxxkO000000000OOOOkkxxdooc;.        cOO0000000
-dxddddddddooc'.,.     cO0000OOkxddol:,,;:::ccccloxkOKK0xdxxkkOOOOOOOOkkkkxxddolc,.       .oOO0000000
-ddddddddddol,.,;.    .lOOOkkkxxddxxdooodxkOO00OO00KKKKKOxddxxxxxxxkkkkkxxxxdoll:,..      'xOO0000000
-dddddddddol;.':,     .lxxxxxxddddkkkxxxxddddxxk00KKKKK00xdoddxxxxxxxxxxxxxxdoll:,..      :OO00000000
-ddddddddooc..::.     .:ooooooolloxkkxl:;,,,,,,;:lodxkOOkxdoddxxxxxxxkkkkxxxdool:'.      .oOO00000000
-ddddddddol'.;c;.      ,lollllccclddl:,',;;::::;;,;;;:coddooddxxxxxxxkkkkxxxdolc;'...    ,xO000000000
-ddddddddo;.,cc,.      .clllllc:::c;,,;:llooodlc:,'''..';lodxxxxxxxxxxkxxxxdool:,.''..   ,c::;',:lc:c
-ddddddooc..cl:'.       ;llllllc:;,..',,'',,;,,''.....,:codxxxxxxxxxxxxxxddoolc;'..'..               
-ddoooool,.;ll;.        .cllllll:;;'..'',:loddddoollloxkkkkxxxxxdddddddddoollc:,..                   
-doooooo:.,llc,.        .:lllllllcccllodxxxddooooddxxkOOOOkkxxddddddooooollcc:;'.                    
-doooooc..col:'          .clllllllooolc:::;;;;cloxkkkOOOOOOkxxddooooollllcc::;'.                  .. 
-dooooo,.;lol;.           'clllllooddolc::::cloxkOOOOOOOOOOkxdooollllccc:::;;,.                      
-oooooc.'lllc'.            .:llloodxxdolllllodxkOO00000OOkkxdoollllcc:::;;;,,..                      
-ooooo,.:oll:.              .;cllodxkxxxdddxxkOO000OOOOkkxdoollllcc::;;;;,,,'.                       
-ooooc',llll;.                ':lodxkkkkkkkkOOOOOkkkkxxddollccccc::;;;;;,,,'..                       
-oooo;'collc'                  .,:lodxxxxxxxxxxxddddoollccc:::::;;;;;;;;;;,'..                       
-,,;;':dddoc.                    .,:loooooolollllllccc:::;;;;;;,,,,;;;;::;;'...                      
-..';;oOOkxc.                      ..;ccc::::::::;;;;;;,,,,,,,,,,;;;::::::;,...                      
-;cdo:dOOkd,.                         .',,,,,,,,,,,,,,,,,,,,,,,;;;:::ccccc;,....                     
-O00dcx00Oo'                             .'''''''',,,,,,,,,,,;;;:::ccclllc:,'....                    
-000dlkK0Ol.           ..   ..            ..'''''',,,,,,,,,;;;:::cccllllll:;,'''.                    
-00KxlxK0x;.           .....''.             .,,,,,,,,,,,,,;;:::cccllllllolc;,,,''.                   
-00KOlxK0o'...         ...;:co;             .',;;,,,,,,,;;;::ccclllloooooolc:;;,,..                  
-KKK0dx0kc......       ..;kklxk'             .,;;;;;;,,;;:::ccllllooooooooolcc::;,..                 
-KKKKOxkd,.......      ..oKKdd0o.             ';;;;;;;;;;::ccllloooooooddddoollcc:;'.                
-KKKK0kdl'....... .    .ck0X0dkk,             .,;;;;;;;;:::ccllloooooddddddddooollc:,..              
-XXXXKOo;...........   .cO0KXOol'             .,;;;;;;;;::ccclllooooddddxxxxxddddddolc;,'.           
-NNNXX0o'.......... .,:,.ckkko'.               ';:::::::::cccllloooodddxxxxxxxxkkkkkkxollc;'.        
-NNNNN0c............;OKd,.','.                 .;:::::::::cclllllooodddxxxxxkkkOO00000OOkdlclc,.     
-NNNNXk,............dXKOl.                     .;::::::::cccllllllooodddxxkkkOO0000KK00000OkOOOxl;.  
-WWNNXx'...........,OX0x:.                     .,::::::cccccllllllloooddxxkOO0000KKKKKKKKKKKK0Okxdl;.
-WWNNXd'...........:xo,.                       .,;:::::ccccclllllllooodxxkOO000KKKKKKKKK0Okdoc:,'....
-NNNNKo'.............                          .,;::::ccccclllllllooodxxkkOO000KKKKK0kdlc;'..........
-XXXX0l'. .........                           ..,;;:::ccccllllllooodxxkkOOO000KK0Odl;,'.....    .....
-coxOkc'.  ........                          ..',;;::ccccllllloooddxkkOOO0000Oxl:,........  .........
-'',;::,.   .......                         ..',;;:::ccllllooooddxxkkOOO00Odc;'.........  .......'...
-kdddxo;.    ......                        .',,;;::ccclllooooddxxkkOOO0Odc,........... ...'..........
-0KXXXO:..    .   ..                       ';:::cclllllooodddxxkkOOOOxl,........  .. ................
-NNWWNO;...        ..                     .;cccllllloooodddxxkkkOOxl;......... ......................
-NWWNO:....        ...                   .,ccclllloooooddxxkkkOko:'.........  ............''.........
-WWXk:......        ..                   .;cllllloooooddxxkkkdc,...........  .........'''............
-WXx:'.....          ...                 ':llllooooodddxxkxo;.............    .....'''...............
-N0l,'.....  ...............            .,clllooooddddxxdc,.............      .......................
-Ko,''................'cxkkxdlc;,'..    .;cllloooddddxdc'..............      ........................
-x,..'...............'l0KKKKKKKKK0Oxdl:;;:cllooooddxo:'..............       .........................
-;...................cOKKKKKKKKKKKKKXXK0Okxdoooool:,'...............   .   ..........................
-'..................,dKKKKKKKKKKKKKKKKKKKKKKOxdl:'.........   .....   .   ...........................
-...................:OKKKKKKKKKKKKKKKKKKKKK000Ol'.....    .. ....   ..   ............................
-..................'o0KKKKKKKKKKKKKKKKKKKK0OO0K0d:...          .   ..   .............................
-..   .............,xK0KKKKKKKKKKK00OOO0000OOO0000kxo;'..         ..   ..............................
-       ...........:O000000000KKKK0OkkxkO000Okk000000Okkxl'.     ..   ...............................
-              ....:k00000000OOOOOOOOkdxkOO00Okk00000xl:;,.    ...   ................................
-                 .,dkO0000OOkxxkkOOOOxodxkOO0OkkO000Ox;.     ...   .................................
-                  .cdxkOOOkkxdodxxkOOOkddxkkOOOkxkOOOOkc.  ...    ..................................
-                  .,cloddxxxxxoccoxkOOOOxddxkkOOkdddkkO0o'...    ...................................
-                    .,:lloodxkko;;ldxkOOOkoodxkOOxllok000x,.    ....................................
-                     ..';clodxkko''codxkOOkolodxxl:,,lkO00x;.  .....................................
-                    .....';coodxko'.,coxkkOxc,;;,....'cdk00Oc.......................................
-                    ........;lodxkd'..:loooc,..........cxO0K0o'.....................................
-                     ....    ':loddc. .;;,''.....  .   .;oOKX0c.....................................
-                              .,::;;'..,,''...........  .'lk0Ko,''''................................
-                               .;ccc::cccc::;;;;;;;;:;;;;;clodoccccc'...............................
-                                                          ..........................................
-
-    """
-
 # ========== 主程序 ==========
 
 def roles(role_name):
@@ -189,18 +82,17 @@ def roles(role_name):
                         memory_content = str(data)
                     
                     if memory_content and memory_content.strip():
-                        # Streamlit 中使用 st.write 或静默加载
-                        pass  # 记忆加载成功，不需要打印
+                        print(f"✓ 已加载角色 '{role_name}' 的记忆: {memory_file} ({len(data) if isinstance(data, list) else 1} 条记录)")
                     else:
                         memory_content = ""
             else:
-                pass  # 记忆文件不存在，静默处理
+                print(f"⚠ 记忆文件不存在: {memory_path}")
         except Exception as e:
-                pass  # 加载失败，静默处理
+            print(f"⚠ 加载记忆失败: {e}")
     
     # ========== 第二步：获取基础人格设定 ==========
     role_personality = {
-          "悠扬": """
+        "悠扬": """
         【人格特征】
         你是一个大学生：
         - **外向开朗**：你总是喜欢"哈哈哈哈"等大笑表达来展现自己的情绪
@@ -227,12 +119,10 @@ def roles(role_name):
     
     # 如果有外部记忆，优先使用记忆内容
     if memory_content:
-        role_prompt_parts.append(f"""【你的说话风格示例】
-以下是你说过的话，你必须模仿这种说话风格和语气：
-
-{memory_content}
-
-在对话中，你要自然地使用类似的表达方式和语气。""")
+            role_prompt_parts.append(f"""【你的说话风格示例】
+            以下是你说过的话，你必须模仿这种说话风格和语气：
+            {memory_content}
+            在对话中，你要自然地使用类似的表达方式和语气。""")
     
     # 添加人格设定
     role_prompt_parts.append(f"【角色设定】\n{personality}")
@@ -242,7 +132,19 @@ def roles(role_name):
     
     return role_system
 
+# 【角色选择】
+# 定义AI的角色和性格特征
+# 可以修改这里的角色名来选择不同的人物
+# 【加载完整角色设定】
+# roles() 函数会自动：
+# 1. 加载该角色的外部记忆文件
+# 2. 获取该角色的基础人格设定
+# 3. 整合成一个完整的、结构化的角色 prompt
+role_system = roles("悠扬")
+
 # 【结束对话规则】
+# 告诉AI如何识别用户想要结束对话的意图
+# Few-Shot Examples：提供具体示例，让模型学习正确的行为
 break_message = """【结束对话规则 - 系统级强制规则】
 
 当检测到用户表达结束对话意图时，严格遵循以下示例：
@@ -259,117 +161,112 @@ break_message = """【结束对话规则 - 系统级强制规则】
 
 如果用户没有表达结束意图，则正常扮演角色。"""
 
-# ========== Streamlit Web 界面 ==========
-st.set_page_config(
-    page_title="你好,悠扬!",
-    page_icon="❀",
-    layout="wide"
-)
+# 【系统消息】
+# 将角色设定和结束规则整合到 system role 的 content 中
+# role_system 已经包含了记忆和人格设定，直接使用即可
+system_message = role_system + "\n\n" + break_message
 
-# 初始化 session state
-if "conversation_history" not in st.session_state:
-    st.session_state.conversation_history = []
-if "selected_role" not in st.session_state:
-    st.session_state.selected_role = "人质"
-if "initialized" not in st.session_state:
-    st.session_state.initialized = False
+# ========== 对话循环 ==========
+# 
+# 【重要说明】
+# 1. 每次对话都是独立的，不保存任何对话历史
+# 2. 只在当前程序运行期间，在内存中维护对话历史
+# 3. 程序关闭后，所有对话记录都会丢失
+# 4. AI的记忆完全基于初始记忆文件（life_memory.json）
 
-# 页面标题
-st.title(❀ 你好,悠扬!")
-st.markdown("---")
-
-# 侧边栏：角色选择和设置
-with st.sidebar:
-    st.header("⚙️ 设置")
+try:
+    # 初始化对话历史（只在内存中，不保存到文件）
+    # 第一个消息是系统提示，包含初始记忆和角色设定
+    conversation_history = [{"role": "system", "content": system_message}]
     
-    # 角色选择
-    selected_role = st.selectbox(
-        "选择角色",
-        ["悠扬", "你"],
-        index=0 if st.session_state.selected_role == "悠扬" else 1
-    )
+    print("✓ 已加载初始记忆，开始对话（对话记录不会保存）")
     
-    # 如果角色改变，重新初始化对话
-    if selected_role != st.session_state.selected_role:
-        st.session_state.selected_role = selected_role
-        st.session_state.initialized = False
-        st.session_state.conversation_history = []
-        st.rerun()
+    while True:
+        # 【步骤1：获取用户输入】
+        user_input = input("\n请输入你要说的话（输入\"再见\"退出）：")
+        
+        # 【步骤2：检查是否结束对话】
+        if user_input in ['再见']:
+            print("对话结束")
+            break
+        
+        # 【步骤3：将用户输入添加到当前对话历史（仅内存中）】
+        conversation_history.append({"role": "user", "content": user_input})
+        
+        # 【步骤4：调用API获取AI回复】
+        # 传入完整的对话历史，让AI在当前对话中保持上下文
+        # 注意：这些历史只在本次程序运行中有效，不会保存
+        result = call_zhipu_api(conversation_history)
+        assistant_reply = result['choices'][0]['message']['content']
+        
+        # 【步骤5：将AI回复添加到当前对话历史（仅内存中）】
+        conversation_history.append({"role": "assistant", "content": assistant_reply})
+        
+        # 【步骤6：显示AI回复】
+        # 生成Ascii头像：https://www.ascii-art-generator.org/
+        portrait = """
+docc::cccclldkkxxxkkOkkkddxkOOOkxdddddxxxxxkkkOOOO
+xxolccccclloxkkkkkkOOOkkxxxkOOOkkxdddxxxxxxkkkxxkO
+kkxolcccloddxkkkkkkOOkkxdddxxkkkxxxxxxdddxkkkxolok
+kkkkdolloddxkkkkkkkkkkxdoooooddddddooooddkkxollclx
+kkkkkxoodddxkkkkkkxxdocccc:;;:cc::::loodddolc:::lk
+kkkkkxddddxxkkkxxdlc;'...........'',;:looc;;:;;:lk
+kkkkkxddddxkkkxdl;'.,cldxxxdoc;'...''',,,'''',,;lO
+kkkkkxdddxxxxxo:'':dOKXXXXXXXK0Od:'....',,'...',o0
+kkOOkxdddxxxdl'.:x0KKXXXXXXNXXKK0Od:....',,'...,d0
+kkkkkxddxdxdc''lO0KKKKXXXXXXXXXXKKKOl'....''...,xK
+Okkxxxdddxxc.'lk00KKKKKKKKKKKKKKXXK0Ol.. ......:kK
+OOkxxxdddxl..:xOOOOO000kxddxkO0KKK000kc.  ... .c0K
+xxxxxddddo, .cddolodkOkxdodxxxxkOOO000k:.  .  .o0K
+dddxxdddd:. 'oxkxdodk00Odolc::ccldkO000d,     'k00
+ddddxdddl. .;olc:clx0XXK0OkxxkO000KKKK0Oc.    :O0K
+oddxdddo,  .:loodxk0KKKKKKKXXXXXXXXXKK0kl.   .o00K
+ddddddo:.  'x0000OOkkO00OkkOKKXXXKKK0Okxc.   'x000
+dddddo:'  .l0K0Oxoc::::ldxkkkO00000Okxdo;.   ;O000
+dddddc,.  .dOkkxdolloddxO0K0xdxkkkkkxxol,.  .l0000
+ddddl,,.  .lddooxxocccloxxkOxddxxxxxxxoc,.  'x0000
+dddo:,:.  .;llccc:;;:::,'',:ldxxxxxxxdo:'.. .ccccc
+dodc,:;.   'lllc;,;:clcc::codxxxddddolc,..        
+odl;:c'    .:lllllllllodkkOOOkxdooolc:;.          
+oo:;l:.     .:loddolloxOO0OOkxdolcc:;,.           
+ol;:l,        ,cdxkxxkkOkkkxollc::;;,'.           
+:;cdo'         .,ldooooollc::;;;;;;;;'.           
+:cdOo.           ..,;;;,,,,,,,,;;::c:,..          
+0xxOc.              .''',,,,,,;::cllc;'.          
+0kkk;.     .':'      .,,,,,,;::clloolc;,.         
+K0ko'..    ,xko'      .;;;;;:clloooddolc;.        
+XKk:..... .:OOo'      .;;;;;:cllooddxxdddl;'.     
+NNk,.....;o:;;.        ,:::::clloodxxxkOOOkxoc;.  
+WNd......dk;           '::::ccllloodxkO0KKKK0Okd:.
+NXo......'.            ':::ccclllodxkO0KK0kdl;'...
+dxc......             .,:::ccllodxkO0Okoc;........
+lol. ....            .,;:ccllodxkOOxl:'...........
+XNx.                .;cclloodxkkxo:'..............
+Nk,..    .         .,cllooodxxo:'..... ...........
+O:............     .:looddddl;......  ............
+c'.......'cO0Oxdoc;:loooolc,.......   ............
+'........;kKKKKKXXK0Okd:'........    .............
+.........l0KKKKKKKKK00Ol'..         ..............
+   .....'d0000000OkO0OO0Oxo:'   .  ...............
+        .oO00OkkOOxxkOOOO0kc.  .  ................
+         ,oxxxdookOkxxkkxxkkc..  .................
+          .;coxd:cdkkdodl;cxOo. ..................
+          ...,cdo,,ldc,'...,d0d,..................
+              .;l:,;;,......;d0o,,................
+               .,,,;;,,,,,,,,;cc:;'...............
+        """
+        print(portrait + "\n" + assistant_reply)
+        
+        # 【步骤7：检查AI回复是否表示结束】
+        reply_cleaned = assistant_reply.strip().replace(" ", "").replace("！", "").replace("!", "").replace("，", "").replace(",", "")
+        if reply_cleaned == "再见" or (len(reply_cleaned) <= 5 and "再见" in reply_cleaned):
+            print("\n对话结束")
+            break
+
+except KeyboardInterrupt:
+    # 用户按 Ctrl+C 中断程序
+    print("\n\n程序被用户中断")
+except Exception as e:
+    # 其他异常（API调用失败、网络错误等）
+    print(f"\n\n发生错误: {e}")
     
-    # 清空对话按钮
-    if st.button("🔄 清空对话"):
-        st.session_state.conversation_history = []
-        st.session_state.initialized = False
-        st.rerun()
-    
-    st.markdown("---")
-    st.markdown("### 📝 说明")
-    st.info(
-        "- 选择角色后开始对话\n"
-        "- 对话记录不会保存\n"
-        "- AI的记忆基于初始记忆文件"
-    )
-
-# 初始化对话历史（首次加载或角色切换时）
-if not st.session_state.initialized:
-    role_system = roles(st.session_state.selected_role)
-    system_message = role_system + "\n\n" + break_message
-    st.session_state.conversation_history = [{"role": "system", "content": system_message}]
-    st.session_state.initialized = True
-
-# 显示对话历史
-st.subheader(f"💬 与 {st.session_state.selected_role} 的对话")
-
-# 显示角色头像（在聊天窗口上方）
-st.code(get_portrait(), language=None)
-st.markdown("---")  # 分隔线
-
-# 显示历史消息（跳过 system 消息）
-for msg in st.session_state.conversation_history[1:]:
-    if msg["role"] == "user":
-        with st.chat_message("user"):
-            st.write(msg["content"])
-    elif msg["role"] == "assistant":
-        with st.chat_message("assistant"):
-            st.write(msg["content"])
-
-# 用户输入
-user_input = st.chat_input("输入你的消息...")
-
-if user_input:
-    # 检查是否结束对话
-    if user_input.strip() == "再见":
-        st.info("对话已结束")
-        st.stop()
-    
-    # 添加用户消息到历史
-    st.session_state.conversation_history.append({"role": "user", "content": user_input})
-    
-    # 显示用户消息
-    with st.chat_message("user"):
-        st.write(user_input)
-    
-    # 调用API获取AI回复
-    with st.chat_message("assistant"):
-        with st.spinner("思考中..."):
-            try:
-                result = call_zhipu_api(st.session_state.conversation_history)
-                assistant_reply = result['choices'][0]['message']['content']
-                
-                # 添加AI回复到历史
-                st.session_state.conversation_history.append({"role": "assistant", "content": assistant_reply})
-                
-                # 显示AI回复
-                st.write(assistant_reply)
-                
-                # 检查是否结束
-                reply_cleaned = assistant_reply.strip().replace(" ", "").replace("！", "").replace("!", "").replace("，", "").replace(",", "")
-                if reply_cleaned == "再见" or (len(reply_cleaned) <= 5 and "再见" in reply_cleaned):
-                    st.info("对话已结束")
-                    st.stop()
-                    
-            except Exception as e:
-                st.error(f"发生错误: {e}")
-                st.session_state.conversation_history.pop()  # 移除失败的用户消息
-
-
