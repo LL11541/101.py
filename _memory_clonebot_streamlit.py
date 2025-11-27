@@ -38,7 +38,7 @@ def call_zhipu_api(messages, model="glm-4-flash"):
 # 3. 记忆文件可以手动编辑，随时更新
 
 # 记忆文件夹路径
-MEMORY_FOLDER = "4.2_memory_clonebot"
+MEMORY_FOLDER = "_memory_clonebot"
 
 # 角色名到记忆文件名的映射
 ROLE_MEMORY_MAP = {
@@ -371,4 +371,5 @@ if user_input:
             except Exception as e:
                 st.error(f"发生错误: {e}")
                 st.session_state.conversation_history.pop()  # 移除失败的用户消息
+
 
