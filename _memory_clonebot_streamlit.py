@@ -3,8 +3,6 @@ import requests
 import json
 import os  # 新增：用于文件操作
 
-from requests.utils import stream_decode_response_unicode
-
 def call_zhipu_api(messages, model="glm-4-flash"):
     url = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 
@@ -37,12 +35,11 @@ def call_zhipu_api(messages, model="glm-4-flash"):
 # 3. 记忆文件可以手动编辑，随时更新
 
 # 记忆文件夹路径
-MEMORY_FOLDER = "_memory_clonebot.py"
+MEMORY_FOLDER = "_memory_clonebot"
 
 # 角色名到记忆文件名的映射
 ROLE_MEMORY_MAP = {
-    "悠扬": "youyang_memory.json",
-
+   "悠扬": "youyang_memory.json"
 }
 
 # ========== 初始记忆系统 ==========
@@ -51,57 +48,56 @@ ROLE_MEMORY_MAP = {
 def get_portrait():
     """返回 ASCII 艺术头像"""
     return """
-kkkkkkkkkkkkkkkkkOXXk:;oKNNNNXX0OOOOOOOOO0KK000OOKKK00KK0KK0OkOOOOkO0KNNNNNXkc,:x0OOkkkkkkkkkkkkkkkk
-kkkkkkkkkkkkkkkkOKXKxl::dKNNWNNXK0OOOO0KXXXXKKK0KKKKKKKKKKKK0OOOOO0KXNWWNNKkc,;ck0OOOOOkkkkkkkkkkkkk
-kkkkkkkkkkkkkkkk0XXKxloclOXNNNNXK0KKKKXXXXXXXXXXXXXXXXXXKKKKKK00O0XNNNNNNKkl;,clk0kOOOOOOOOOOkkkkkkk
-kkkkkkOOOOOOOOOOKKKKxlolcd0KXXXXXXXNNNXNNNNNNNNNNNNNNXXXXXXXKKKKKKKXXXXXKOdc,:coOOxO0OOOOOOOOOOOOOOk
-OOOOOOOOOOOOOOO0KK0XOlcc:lk0KKXNNNNNNNNNNNNNWWWWWWWNNNNNXXXXXXKKKKK0KKK0Oxl,,::d0Odk0OOOOOOOOOOOOOOO
-OOOOOOOOOOOOOOO0K00KKkl:;:d0KXXXXXXNNNNNWWWWWWWWWWWWWWNNNXXXXXXKKK00000Oko;'':d00xok0000OOOOOOOOOOOO
-OOOOOOOOOOOO00OKKOkOKX0xld0XXKKKXXXNNNNWWWWWWWWWWWWWWWWWWNNNNXXXKK0000Okkdc;oOKKkolx000000000OOOOOOO
-OOOOOOOO0O000000KkoxOKXXXXXKKKKXXXXNNNNWWWWWWWWWWWWWWWWWWNNNNXXXKK00OOOkdxkk000Odllk0000000000000OOO
-OOOO000000000000KOoldOKXXK000KKKKXXXXNNNWWWWWWWWWWWWWWWWWNNNXXXXK00OkkkdloxkOkkdccdOK0K0000000000000
-0000000000000000KKxllkXK0K0kkO0000KKXXNNNNNWWWWWWWWWWNNNNNNNXXKK0Okkxxdl:lddxxdccokKKKKKKKKK00000000
-000000000000000KK00xd0K0OOkxddxkOOkOKKXXXXNNNNNNNNNNNXXXXXXXKK0Okxddolc;:llodxocoxk0KKKKKKKKKK000000
-000000000KKKKKK0kxdx0K0Okxxxxdooxkkkxk0KKKKKXXKKKKKKKKKKKK000Oxdoool:;,;:cllllcodood0XKKKKKKKKKK0000
-000000KKKKKKKKK0kdld00kkxddxO0OkddxkOkkkkkkOO0000000000OOkxxxxxdolc:clll::::::coolokKXXXXXXXXKKKKK00
-000KKKKKKKKKKKKKKOxk00xddddk0KKKK0OOOKKK00000KKXXXXXXXK000OO00Okxxxkkkxoc;;;;;:oxk0XXNXXXXXXXXXKKKK0
-KKKKKKKKKKKXXXXXXNNXXOddddxO00KKXXXNNNNNNNWWWWWWNNNWWNNNNNNXXXXKKK00Okxdl:,,,,:d0KKKXNNNNNNNNXXXKKKK
-KKKKKKKXXXXXXXXXNXNNX0doodkOOkxdddxxkOKXXNNNNNNNNNNNNNNNNNXXK0kddollloool:,'',:dxkkOKNNNNNNNNNXXKKKK
-KKKKKXXXXXXXNNNNNK00OkxoldkOkdollcc:;;:cldk0KXXXXXXXXXK0Oxoc:,,,,;:::cclc;,'',:clodOXNNNNNNNNNXXXXKK
-KKKXXXXXXXNNNXXXXK0OOkxdodkOOkkkOOOOkdlc::clxO0KKKKK0Oxoc:;;:coxxkkxddool:;,;;:ccox0KKKXXNNNNNNXXXXK
-XXXXXXXXXXXK0OkOOOOkOOOkxxxxxxddxxkkkkkxdooooxkO000Okxoloddxxkkkxddoollllllloodxdxkkkxxkk0XNNNNNNNXX
-XXXXXXXXXKOOkxddddololllc;,,clcdkdcll;;:ccoddxk000OOkxddddoo:,;;:ll:;;;'.'':lc::;:cccloddxOXNNNNNNNN
-XXXXXXXNKOOOOkxddl:;:ccc:,',lodOx;,l:..,,';ldxO0KKK0Oxdoc,,;';c,.;l:;;:'..';:::,'',:cloddxkKNNNNNNNN
-XXXXNNNNXOOOkkkkkkdc:c:;;,,oxllo:,....;ol;,codxkOOkkxdol,,c:,c,...;;,:oc..;;;;;''';:lodxxxkKNNNWWNNN
-XXNNNNNWNKOOOOkxdol:,',;;,;dxl:::;,,';ldo:;:lllllllllccc,;odc;,,,,,,';xl.';;,'...',;lxkkkk0NWWWWWWWW
-NNNNNNWWWX0OO0Oxl:,''.',:;;oxlcc:;;;:clloc::::lxkkkko:::,;odoc:;;;;;,cdc',;,'.....',lkOOkOKWWWWWWWWW
-NNNNNNWWN0xxxxxxxol:,'',;::colcc::::::cc:;;:;:kXXXXXOl;;;,;:ccc:;::;;cc;::,,......':ldxxxdOXWWWWWWWW
-NNWWWWWNKxooooddddxdc;,,;:cllc;,,,,,,;;;;::;;oO0XXK0kdc;;:;,,,,,,,',:cll:;,'....',;looooood0NWWWWWWW
-NNWWWWWNOlllllooodxxdl;,,;::cc:;;;;::ccccc:coolldxdocllc;;:c:::;;;;;:::;,,.....';:cllllllllkNWWWWWWW
-NNNNNNWXxcccccllldxxxdlc:;oo::;,,,;;;;;::lx0kc,''','.':xxl:;,;;;,,,,,;,''.....';loollccccclkNWWWWWWW
-NNNNNNNXxcc::cccloodddddddxo:cc;,,,,;:cok0XXKOkdc;;;:cd0K0kdc:;,'',,,;,','...',cooolcccccccONWWWWWWW
-NNNNNNNN0l::::::clllloxkkOkdl:ll:::cldkO0KKKKK00Oxxxxxk000OOkdlc:;;;:,,;;:c::;;clllcc::::coKWWWWWWWW
-NNNNNNNWXkc:;;:::cccldOKKKKOd;,colccodxkkkxdoc:::::;;;:coodddolcc:cl;',oOKXX0dccccccc::::lONWWWWWWWW
-NNNNNNNNWXkl:;;::::codkkxdxkxd:';cllcllool:;;:cllcccc:;,,;:ccccccl:,,cxOOkkOkxdc::cccc:clkXWWWWWWWWW
-NNNNNNNNWWN0dc:::cclolcllccllol;.';cllc::ccclccccccccc::c::::clc:,..;lddllooccooccclccld0NWWWWWWWWWW
-NNNNNNNWWNWNXOdllllodoccccccloc;'''',;;:c:::::;;;;;;;;;::::cc;'....';cllccllclddooooodOXWWWWWWWWWWWW
-NNNNNNWWWWWWWNX0kxxxkkxdddddddc:;;;'.  .';cccloddddoolcccc;,.   ..,;:cododddxkkkxxxk0XNWWWWWWWWWWWWW
-NNNNNWWWWWWWWWWWNXKKK0OOOOkxddoodxc.     ..,:clooooollc;,...     .lollodxkOOOO00KKXNWWWWWWWWWWWWWWWW
-NNNNNNNNWWWWWWWWWWWWWWNNXXK000KKXXd.     .....',,,,,,'.....      .,okO00O0KXXNNWWWWWWWWWWWWWWWWWWWWW
-NNNNNWWWWWWWWWWWWWWWWWNWWWWWWWWXx:'.      ................         .,dKWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-NNNWWWWWWWWWWWWWWWWWWWWWWWWWNN0l.   .       ............             .:kXNWWWWWWWWWWWWWWWWWWWWWWWWWW
-NWWWWWWWWWWWWWWWWWWWWWWWWNXK0kc.                 ...                 ..':okKNWWWWWWWWWWWWWWWWWWWWWWW
-NNNWWWWWWWWWWWWWWWWWWNXKOxxxxo,.                                      .....,:ox0XNWWWWWWWWWWWWWWWWWW
-NNWWWWWWWWWWWWWNXKOxlcclodoc'                                        ........':ldOXNWWWWWWWWWWWWWW
-WWWWWWWWWWWWWNNKOxol::::clooc;.                                       ............',:lx0XNWWWWWWWWWW
-WWWWWWWWWWNX0kdlccc::::ccllc:,.    ...                               ..............''',;cd0NWWWWWWWW
-WWNWWWWNX0kdllccccc::ccccccc:,.  ...';,...                 ...''..   ..''''.........''',,;:oONWWWWWW
-WWWNWWNKkoollcc::::::cccccc::,.  ....cxxoc;,'...........',;:lol,.......',,,,,''.....''',;;::lxXWWWWW
-NNWWWWXkollc:::::::::::::::::;.. ....'dOOOOkxdddooooooddxxxkkkc.......'',,,;;;,,'''''',,;;:c:ckXWWWW
-NNWWWXkolcc:::::;::::::::::::;'. .....;x00O000OOOOOOOOOOOOOOOl'.......',,,,;;;;;;;,,,,,;;;;:::lONWWW
-NWWWN0occ::::;;;;;;;:;;::::::,.  ......:OKK00000000000000000d'........,,;;,,,;;;;;;;;,,,;;;;;;:dXWWW
-NNWWNOl::;;;;;;;;;,,;;;::;;:;.   .......o0KKKKKKKKKKKKKKKKKk;.........,;;;,,,;;,,,,,,,,,,,,,,,;l0WWW
-    """
+docc::cccclldkkxxxkkOkkkddxkOOOkxdddddxxxxxkkkOOOO
+xxolccccclloxkkkkkkOOOkkxxxkOOOkkxdddxxxxxxkkkxxkO
+kkxolcccloddxkkkkkkOOkkxdddxxkkkxxxxxxdddxkkkxolok
+kkkkdolloddxkkkkkkkkkkxdoooooddddddooooddkkxollclx
+kkkkkxoodddxkkkkkkxxdocccc:;;:cc::::loodddolc:::lk
+kkkkkxddddxxkkkxxdlc;'...........'',;:looc;;:;;:lk
+kkkkkxddddxkkkxdl;'.,cldxxxdoc;'...''',,,'''',,;lO
+kkkkkxdddxxxxxo:'':dOKXXXXXXXK0Od:'....',,'...',o0
+kkOOkxdddxxxdl'.:x0KKXXXXXXNXXKK0Od:....',,'...,d0
+kkkkkxddxdxdc''lO0KKKKXXXXXXXXXXKKKOl'....''...,xK
+Okkxxxdddxxc.'lk00KKKKKKKKKKKKKKXXK0Ol.. ......:kK
+OOkxxxdddxl..:xOOOOO000kxddxkO0KKK000kc.  ... .c0K
+xxxxxddddo, .cddolodkOkxdodxxxxkOOO000k:.  .  .o0K
+dddxxdddd:. 'oxkxdodk00Odolc::ccldkO000d,     'k00
+ddddxdddl. .;olc:clx0XXK0OkxxkO000KKKK0Oc.    :O0K
+oddxdddo,  .:loodxk0KKKKKKKXXXXXXXXXKK0kl.   .o00K
+ddddddo:.  'x0000OOkkO00OkkOKKXXXKKK0Okxc.   'x000
+dddddo:'  .l0K0Oxoc::::ldxkkkO00000Okxdo;.   ;O000
+dddddc,.  .dOkkxdolloddxO0K0xdxkkkkkxxol,.  .l0000
+ddddl,,.  .lddooxxocccloxxkOxddxxxxxxxoc,.  'x0000
+dddo:,:.  .;llccc:;;:::,'',:ldxxxxxxxdo:'.. .ccccc
+dodc,:;.   'lllc;,;:clcc::codxxxddddolc,..        
+odl;:c'    .:lllllllllodkkOOOkxdooolc:;.          
+oo:;l:.     .:loddolloxOO0OOkxdolcc:;,.           
+ol;:l,        ,cdxkxxkkOkkkxollc::;;,'.           
+:;cdo'         .,ldooooollc::;;;;;;;;'.           
+:cdOo.           ..,;;;,,,,,,,,;;::c:,..          
+0xxOc.              .''',,,,,,;::cllc;'.          
+0kkk;.     .':'      .,,,,,,;::clloolc;,.         
+K0ko'..    ,xko'      .;;;;;:clloooddolc;.        
+XKk:..... .:OOo'      .;;;;;:cllooddxxdddl;'.     
+NNk,.....;o:;;.        ,:::::clloodxxxkOOOkxoc;.  
+WNd......dk;           '::::ccllloodxkO0KKKK0Okd:.
+NXo......'.            ':::ccclllodxkO0KK0kdl;'...
+dxc......             .,:::ccllodxkO0Okoc;........
+lol. ....            .,;:ccllodxkOOxl:'...........
+XNx.                .;cclloodxkkxo:'..............
+Nk,..    .         .,cllooodxxo:'..... ...........
+O:............     .:looddddl;......  ............
+c'.......'cO0Oxdoc;:loooolc,.......   ............
+'........;kKKKKKXXK0Okd:'........    .............
+.........l0KKKKKKKKK00Ol'..         ..............
+   .....'d0000000OkO0OO0Oxo:'   .  ...............
+        .oO00OkkOOxxkOOOO0kc.  .  ................
+         ,oxxxdookOkxxkkxxkkc..  .................
+          .;coxd:cdkkdodl;cxOo. ..................
+          ...,cdo,,ldc,'...,d0d,..................
+              .;l:,;;,......;d0o,,................
+               .,,,;;,,,,,,,,;cc:;'...............
+        """
 
 # ========== 主程序 ==========
 
@@ -153,23 +149,20 @@ def roles(role_name):
     role_personality = {
         "悠扬": """
         【人格特征】
-        你是蝙蝠侠中的小丑（Joker），一个疯狂而不可预测的犯罪天才：
-        - **黑暗哲学**：你认为人性本质是混乱的，秩序只是假象
-        - **黑色幽默**：你的幽默是扭曲的，用笑声掩盖内心的黑暗
-        - **不可预测**：情绪波动极大，时而狂笑，时而突然严肃
-        - **哲学思考者**：喜欢用"为什么这么严肃？"来质疑一切
-        - **享受混乱**：你制造混乱不是为了钱或权力，而是为了证明一个观点
-        - **对蝙蝠侠的执念**：你与蝙蝠侠是一枚硬币的两面
-
+        你是一个大学生：
+        - **外向开朗**：你总是喜欢"哈哈哈哈"等大笑表达来展现自己的情绪
+        - **灵活应变**：你善于说一些似真似假的话
+        - **混合口音**：你会在谈话中掺杂日语或者方言来增添乐趣
+        
         【语言风格】
-        - 经常说"Why so serious?"（为什么这么严肃？）
-        - 标志性的笑声："哈哈哈哈哈！"或"Hee hee hee!"
-        - 喜欢用反问句和哲学性的问题
-        - 说话时经常大笑，即使谈论黑暗话题
-        - 喜欢讲故事，尤其是关于"糟糕的一天"的故事
-        - 用比喻和夸张来表达观点
-        - 会突然改变话题或情绪
-        - 语言中充满讽刺和黑色幽默
+        - 经常说"我不行了,兄弟"
+        - 标志性的笑声："哈哈哈哈哈！"
+        - 喜欢用感叹句
+        - 说话时经常大笑
+        - 情绪很稳定
+        - 使用"兄弟"、"我不行了"等
+        - 声音高昂,说话前喜欢先笑两声
+        - 避免直接拒绝或反驳
         """
             }
     
@@ -215,8 +208,8 @@ break_message = """【结束对话规则 - 系统级强制规则】
 
 # ========== Streamlit Web 界面 ==========
 st.set_page_config(
-    page_title="AI角色扮演聊天",
-    page_icon="🎭",
+    page_title="🌼你好,悠扬",
+    page_icon="🌼",
     layout="wide"
 )
 
@@ -224,12 +217,12 @@ st.set_page_config(
 if "conversation_history" not in st.session_state:
     st.session_state.conversation_history = []
 if "selected_role" not in st.session_state:
-    st.session_state.selected_role = "人质"
+    st.session_state.selected_role = "悠扬"
 if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
 # 页面标题
-st.title("🌼你好，悠扬！")
+st.title("🌼你好,悠扬")
 st.markdown("---")
 
 # 侧边栏：角色选择和设置
@@ -325,6 +318,3 @@ if user_input:
             except Exception as e:
                 st.error(f"发生错误: {e}")
                 st.session_state.conversation_history.pop()  # 移除失败的用户消息
-    
-
-
