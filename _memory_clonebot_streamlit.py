@@ -35,7 +35,7 @@ def call_zhipu_api(messages, model="glm-4-flash"):
 # 3. 记忆文件可以手动编辑，随时更新
 
 # 记忆文件夹路径
-MEMORY_FOLDER = "_memory_clonebot"
+MEMORY_FOLDER = "_backend_101"
 
 # 角色名到记忆文件名的映射
 ROLE_MEMORY_MAP = {
@@ -143,7 +143,7 @@ def roles(role_name):
             else:
                 pass  # 记忆文件不存在，静默处理
         except Exception as e:
-                pass  # 加载失败，静默处理
+            pass  # 加载失败，静默处理
     
     # ========== 第二步：获取基础人格设定 ==========
     role_personality = {
@@ -217,7 +217,7 @@ st.set_page_config(
 if "conversation_history" not in st.session_state:
     st.session_state.conversation_history = []
 if "selected_role" not in st.session_state:
-    st.session_state.selected_role = "悠扬"
+    st.session_state.selected_role = "我"
 if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
@@ -233,7 +233,7 @@ with st.sidebar:
     selected_role = st.selectbox(
         "选择角色",
         ["我"],
-        index=0 if st.session_state.selected_role == "我" else 1
+        index=0
     )
     
     # 如果角色改变，重新初始化对话
