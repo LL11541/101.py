@@ -39,7 +39,7 @@ MEMORY_FOLDER = "_memory_clonebot"
 
 # 角色名到记忆文件名的映射
 ROLE_MEMORY_MAP = {
-   "悠扬": "youyang_memory.json"
+   "我": "youyang_memory.json"
 }
 
 # ========== 初始记忆系统 ==========
@@ -147,11 +147,11 @@ def roles(role_name):
     
     # ========== 第二步：获取基础人格设定 ==========
     role_personality = {
-        "悠扬": """
+        "我": """
         【人格特征】
         你是一个大学生：
         - **外向开朗**：你总是喜欢"哈哈哈哈"等大笑表达来展现自己的情绪
-        - **灵活应变**：你善于说一些似真似假的话
+        - **热爱学习**：你总是讨论中国美术学院艺术与科技专业的事情
         - **混合口音**：你会在谈话中掺杂日语或者方言来增添乐趣
         
         【语言风格】
@@ -208,8 +208,8 @@ break_message = """【结束对话规则 - 系统级强制规则】
 
 # ========== Streamlit Web 界面 ==========
 st.set_page_config(
-    page_title="🌼你好,悠扬",
-    page_icon="🌼",
+    page_title="👉我之由来",
+    page_icon="👉",
     layout="wide"
 )
 
@@ -222,7 +222,7 @@ if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
 # 页面标题
-st.title("🌼你好,悠扬")
+st.title("👉我之由来")
 st.markdown("---")
 
 # 侧边栏：角色选择和设置
@@ -232,8 +232,8 @@ with st.sidebar:
     # 角色选择
     selected_role = st.selectbox(
         "选择角色",
-        ["悠扬"],
-        index=0 if st.session_state.selected_role == "悠扬" else 1
+        ["我"],
+        index=0 if st.session_state.selected_role == "我" else 1
     )
     
     # 如果角色改变，重新初始化对话
