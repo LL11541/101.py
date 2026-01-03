@@ -20,8 +20,8 @@ def get_portrait():
     """
 
 st.set_page_config(
-    page_title="Talk is cheap Vibe me a future",
-    page_icon="🗨",
+    page_title="我之由来",
+    page_icon="☞",
     layout="wide"
 )
 
@@ -32,7 +32,7 @@ if "selected_role" not in st.session_state:
 if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
-st.title("Talk is cheap 🗨 Vibe me a future")
+st.title("我之☞由来")
 st.markdown("---")
 
 with st.sidebar:
@@ -151,3 +151,4 @@ if user_input:
             except Exception as e:
                 st.error(f"发生错误: {e}")
                 st.session_state.conversation_history.pop()
+
