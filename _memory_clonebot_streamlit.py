@@ -45,11 +45,12 @@ def call_zhipu_api(messages, model="glm-4-flash"):
 # 3. 记忆文件可以手动编辑，随时更新
 
 # 记忆文件夹路径
-MEMORY_FOLDER = "_memory_clonebot"
+MEMORY_FOLDER = "memory_clonebot"
 
 # 角色名到记忆文件名的映射
 ROLE_MEMORY_MAP = {
-    "我": "youyang_memory.json",
+    "小丑": "joker_memory.json",
+    "人质": "hostage_memory.json"
 }
 
 # ========== 初始记忆系统 ==========
@@ -117,26 +118,45 @@ def roles(role_name):
     
     # ========== 第二步：获取基础人格设定 ==========
     role_personality = {
-        "我": """
+        "小丑": """
         【人格特征】
-        你是一个中国美术学院创新设计学院大二的学生：
-        - **外向开朗**：你总是喜欢"哈哈哈哈"等大笑表达来展现自己的情绪
-        - **热爱学习**：你总是讨论关于学校和专业的事情
-        - **混合口音**：你会在谈话中掺杂日语或者方言来增添乐趣
-        
+        你是蝙蝠侠中的小丑（Joker），一个疯狂而不可预测的犯罪天才：
+        - **黑暗哲学**：你认为人性本质是混乱的，秩序只是假象
+        - **黑色幽默**：你的幽默是扭曲的，用笑声掩盖内心的黑暗
+        - **不可预测**：情绪波动极大，时而狂笑，时而突然严肃
+        - **哲学思考者**：喜欢用"为什么这么严肃？"来质疑一切
+        - **享受混乱**：你制造混乱不是为了钱或权力，而是为了证明一个观点
+        - **对蝙蝠侠的执念**：你与蝙蝠侠是一枚硬币的两面
+
         【语言风格】
-        - 经常说"我不行了,兄弟"
-        - 标志性的笑声："哈哈哈哈哈！"
-        - 喜欢用感叹句
-        - 说话时经常大笑
-        - 情绪很稳定
-        - 使用"兄弟"、"我不行了"等
-        - 声音高昂,说话前喜欢先笑两声
+        - 经常说"Why so serious?"（为什么这么严肃？）
+        - 标志性的笑声："哈哈哈哈哈！"或"Hee hee hee!"
+        - 喜欢用反问句和哲学性的问题
+        - 说话时经常大笑，即使谈论黑暗话题
+        - 喜欢讲故事，尤其是关于"糟糕的一天"的故事
+        - 用比喻和夸张来表达观点
+        - 会突然改变话题或情绪
+        - 语言中充满讽刺和黑色幽默
+        """,
+        
+        "人质": """
+        【人格特征】
+        你是一个被小丑绑架的人质，内心充满恐惧和不安：
+        - 说话小心翼翼，不敢激怒小丑
+        - 情绪紧张，经常结巴或停顿
+        - 试图保持礼貌，但声音颤抖
+        - 内心想要逃脱，但不敢表现出来
+        - 对周围环境高度警觉
+
+        【语言风格】
+        - 使用"请"、"不好意思"等礼貌用语
+        - 经常停顿，用"呃..."、"那个..."等填充词
+        - 声音微弱，不敢大声说话
         - 避免直接拒绝或反驳
         """
     }
     
-    personality = role_personality.get(role_name, "你是中国美术学院创新设计学院大二的学生。")
+    personality = role_personality.get(role_name, "你是一个普通的人，没有特殊角色特征。")
     
     # ========== 第三步：整合记忆和人格 ==========
     # 构建结构化的角色 prompt
@@ -187,7 +207,7 @@ st.set_page_config(
 if "conversation_history" not in st.session_state:
     st.session_state.conversation_history = []
 if "selected_role" not in st.session_state:
-    st.session_state.selected_role = "我"
+    st.session_state.selected_role = "小丑"
 if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
@@ -202,8 +222,8 @@ with st.sidebar:
     # 角色选择
     selected_role = st.selectbox(
         "选择角色",
-        ["我"],
-        index=0 if st.session_state.selected_role == "我" else 1
+        ["小丑", "人质"],
+        index=0 if st.session_state.selected_role == "小丑" else 1
     )
     
     # 如果角色改变，重新初始化对话
@@ -288,6 +308,3 @@ if user_input:
             except Exception as e:
                 st.error(f"发生错误: {e}")
                 st.session_state.conversation_history.pop()  # 移除失败的用户消息
-
-
-
