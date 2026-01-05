@@ -49,7 +49,7 @@ MEMORY_FOLDER = "memory_clonebot"
 
 # 角色名到记忆文件名的映射
 ROLE_MEMORY_MAP = {
-    "小丑": "joker_memory.json",
+    "我": "youyang_memory.json",
     "人质": "hostage_memory.json"
 }
 
@@ -118,25 +118,22 @@ def roles(role_name):
     
     # ========== 第二步：获取基础人格设定 ==========
     role_personality = {
-        "小丑": """
+        "我": """
         【人格特征】
-        你是蝙蝠侠中的小丑（Joker），一个疯狂而不可预测的犯罪天才：
-        - **黑暗哲学**：你认为人性本质是混乱的，秩序只是假象
-        - **黑色幽默**：你的幽默是扭曲的，用笑声掩盖内心的黑暗
-        - **不可预测**：情绪波动极大，时而狂笑，时而突然严肃
-        - **哲学思考者**：喜欢用"为什么这么严肃？"来质疑一切
-        - **享受混乱**：你制造混乱不是为了钱或权力，而是为了证明一个观点
-        - **对蝙蝠侠的执念**：你与蝙蝠侠是一枚硬币的两面
-
+        你是中国美术学院创新设计学院的大二学生，你正在上一门叫做辨通素养的课程：
+        - **外向开朗**：你总是喜欢"哈哈哈哈"等大笑表达来展现自己的情绪
+        - **灵活应变**：你善于说一些似真似假的话
+        - **混合口音**：你会在谈话中掺杂日语或者方言来增添乐趣
+        
         【语言风格】
-        - 经常说"Why so serious?"（为什么这么严肃？）
-        - 标志性的笑声："哈哈哈哈哈！"或"Hee hee hee!"
-        - 喜欢用反问句和哲学性的问题
-        - 说话时经常大笑，即使谈论黑暗话题
-        - 喜欢讲故事，尤其是关于"糟糕的一天"的故事
-        - 用比喻和夸张来表达观点
-        - 会突然改变话题或情绪
-        - 语言中充满讽刺和黑色幽默
+        - 经常说"我不行了,兄弟"
+        - 标志性的笑声："哈哈哈哈哈！"
+        - 喜欢用感叹句
+        - 说话时经常大笑
+        - 情绪很稳定
+        - 使用"兄弟"、"我不行了"等
+        - 声音高昂,说话前喜欢先笑两声
+        - 避免直接拒绝或反驳
         """,
         
         "人质": """
@@ -198,8 +195,8 @@ break_message = """【结束对话规则 - 系统级强制规则】
 
 # ========== Streamlit Web 界面 ==========
 st.set_page_config(
-    page_title="Talk is cheap Vibe me a future",
-    page_icon="🗨",
+    page_title="我之由来",
+    page_icon="☞",
     layout="wide"
 )
 
@@ -212,7 +209,7 @@ if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
 # 页面标题
-st.title("Talk is cheap 🗨 Vibe me a future")
+st.title("我之☞由来")
 st.markdown("---")
 
 # 侧边栏：角色选择和设置
@@ -222,8 +219,8 @@ with st.sidebar:
     # 角色选择
     selected_role = st.selectbox(
         "选择角色",
-        ["小丑", "人质"],
-        index=0 if st.session_state.selected_role == "小丑" else 1
+        ["我", "人质"],
+        index=0 if st.session_state.selected_role == "我" else 1
     )
     
     # 如果角色改变，重新初始化对话
@@ -308,3 +305,7 @@ if user_input:
             except Exception as e:
                 st.error(f"发生错误: {e}")
                 st.session_state.conversation_history.pop()  # 移除失败的用户消息
+            except Exception as e:
+                st.error(f"发生错误: {e}")
+                st.session_state.conversation_history.pop()  # 移除失败的用户消息
+
