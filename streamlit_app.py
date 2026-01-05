@@ -20,19 +20,19 @@ def get_portrait():
     """
 
 st.set_page_config(
-    page_title="我之由来",
-    page_icon="☞",
+    page_title="你好悠扬",
+    page_icon="🌼",
     layout="wide"
 )
 
 if "conversation_history" not in st.session_state:
     st.session_state.conversation_history = []
 if "selected_role" not in st.session_state:
-    st.session_state.selected_role = "我"
+    st.session_state.selected_role = "悠扬"
 if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
-st.title("我之☞由来")
+st.title("你好🌼悠扬")
 st.markdown("---")
 
 with st.sidebar:
@@ -40,8 +40,8 @@ with st.sidebar:
     
     selected_role = st.selectbox(
         "选择角色",
-        ["我"],
-        index=0 if st.session_state.selected_role == "我" else 1
+        ["悠扬"],
+        index=0 if st.session_state.selected_role == "悠扬" else 1
     )
     
     if selected_role != st.session_state.selected_role:
