@@ -20,8 +20,8 @@ def get_portrait():
     """
 
 st.set_page_config(
-    page_title="Talk is cheap Vibe me a future",
-    page_icon="🗨",
+    page_title="你好悠扬",
+    page_icon="🌼",
     layout="wide"
 )
 
@@ -40,7 +40,7 @@ with st.sidebar:
     
     selected_role = st.selectbox(
         "选择角色",
-        ["我"],
+        ["悠扬"],
         index=0 if st.session_state.selected_role == "我" else 1
     )
     
