@@ -46,7 +46,7 @@ def get_role_prompt(role_name):
         """
     }
     
-    personality = role_personality.get(role_name, "你是一个被暗恋者，没有特殊角色特征。")
+    personality = role_personality.get(role_name, "你是一个普通人，没有特殊角色特征。")
     
     role_prompt_parts = []
     if memory_content:
