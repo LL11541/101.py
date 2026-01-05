@@ -1,13 +1,23 @@
 import streamlit as st
 import requests
 import json
-import os  # 新增：用于文件操作
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from requests.utils import stream_decode_response_unicode
+
+try:
+    from config import ZHIPU_API_KEY
+except ImportError:
+    ZHIPU_API_KEY = "4c944f1ca62449289d21baf4a8777ce6.g0LcLj0ezBObPdW7"
 
 def call_zhipu_api(messages, model="glm-4-flash"):
     url = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 
     headers = {
-        "Authorization": "1732aa9845ec4ce09dca7cd10e02d209.dA36k1HPTnFk7cLU",
+        "Authorization": ZHIPU_API_KEY,
         "Content-Type": "application/json"
     }
 
@@ -35,69 +45,29 @@ def call_zhipu_api(messages, model="glm-4-flash"):
 # 3. 记忆文件可以手动编辑，随时更新
 
 # 记忆文件夹路径
-MEMORY_FOLDER = "_memory_clonebot"
+MEMORY_FOLDER = "memory_clonebot"
 
 # 角色名到记忆文件名的映射
 ROLE_MEMORY_MAP = {
-   "我": "youyang_memory.json"
+    "悠扬": "youyang_memory.json",
 }
 
 # ========== 初始记忆系统 ==========
 
 # ========== ASCII 头像 ==========
 def get_portrait():
-    """返回 ASCII 艺术头像"""
+    """返回 ASCII 艺术"""
     return """
-docc::cccclldkkxxxkkOkkkddxkOOOkxdddddxxxxxkkkOOOO
-xxolccccclloxkkkkkkOOOkkxxxkOOOkkxdddxxxxxxkkkxxkO
-kkxolcccloddxkkkkkkOOkkxdddxxkkkxxxxxxdddxkkkxolok
-kkkkdolloddxkkkkkkkkkkxdoooooddddddooooddkkxollclx
-kkkkkxoodddxkkkkkkxxdocccc:;;:cc::::loodddolc:::lk
-kkkkkxddddxxkkkxxdlc;'...........'',;:looc;;:;;:lk
-kkkkkxddddxkkkxdl;'.,cldxxxdoc;'...''',,,'''',,;lO
-kkkkkxdddxxxxxo:'':dOKXXXXXXXK0Od:'....',,'...',o0
-kkOOkxdddxxxdl'.:x0KKXXXXXXNXXKK0Od:....',,'...,d0
-kkkkkxddxdxdc''lO0KKKKXXXXXXXXXXKKKOl'....''...,xK
-Okkxxxdddxxc.'lk00KKKKKKKKKKKKKKXXK0Ol.. ......:kK
-OOkxxxdddxl..:xOOOOO000kxddxkO0KKK000kc.  ... .c0K
-xxxxxddddo, .cddolodkOkxdodxxxxkOOO000k:.  .  .o0K
-dddxxdddd:. 'oxkxdodk00Odolc::ccldkO000d,     'k00
-ddddxdddl. .;olc:clx0XXK0OkxxkO000KKKK0Oc.    :O0K
-oddxdddo,  .:loodxk0KKKKKKKXXXXXXXXXKK0kl.   .o00K
-ddddddo:.  'x0000OOkkO00OkkOKKXXXKKK0Okxc.   'x000
-dddddo:'  .l0K0Oxoc::::ldxkkkO00000Okxdo;.   ;O000
-dddddc,.  .dOkkxdolloddxO0K0xdxkkkkkxxol,.  .l0000
-ddddl,,.  .lddooxxocccloxxkOxddxxxxxxxoc,.  'x0000
-dddo:,:.  .;llccc:;;:::,'',:ldxxxxxxxdo:'.. .ccccc
-dodc,:;.   'lllc;,;:clcc::codxxxddddolc,..        
-odl;:c'    .:lllllllllodkkOOOkxdooolc:;.          
-oo:;l:.     .:loddolloxOO0OOkxdolcc:;,.           
-ol;:l,        ,cdxkxxkkOkkkxollc::;;,'.           
-:;cdo'         .,ldooooollc::;;;;;;;;'.           
-:cdOo.           ..,;;;,,,,,,,,;;::c:,..          
-0xxOc.              .''',,,,,,;::cllc;'.          
-0kkk;.     .':'      .,,,,,,;::clloolc;,.         
-K0ko'..    ,xko'      .;;;;;:clloooddolc;.        
-XKk:..... .:OOo'      .;;;;;:cllooddxxdddl;'.     
-NNk,.....;o:;;.        ,:::::clloodxxxkOOOkxoc;.  
-WNd......dk;           '::::ccllloodxkO0KKKK0Okd:.
-NXo......'.            ':::ccclllodxkO0KK0kdl;'...
-dxc......             .,:::ccllodxkO0Okoc;........
-lol. ....            .,;:ccllodxkOOxl:'...........
-XNx.                .;cclloodxkkxo:'..............
-Nk,..    .         .,cllooodxxo:'..... ...........
-O:............     .:looddddl;......  ............
-c'.......'cO0Oxdoc;:loooolc,.......   ............
-'........;kKKKKKXXK0Okd:'........    .............
-.........l0KKKKKKKKK00Ol'..         ..............
-   .....'d0000000OkO0OO0Oxo:'   .  ...............
-        .oO00OkkOOxxkOOOO0kc.  .  ................
-         ,oxxxdookOkxxkkxxkkc..  .................
-          .;coxd:cdkkdodl;cxOo. ..................
-          ...,cdo,,ldc,'...,d0d,..................
-              .;l:,;;,......;d0o,,................
-               .,,,;;,,,,,,,,;cc:;'...............
-        """
+ ______     ____     _           __                             
+/_  __/__ _/ / /__  (_)__   ____/ /  ___ ___ ____               
+ / / / _ `/ /  '_/ / (_-<  / __/ _ \/ -_) _ `/ _ \              
+/_/  \_,_/_/_/\_\ /_/___/  \__/_//_/\__/\_,_/ .__/              
+  _   ___ __                            ___/_/  __              
+ | | / (_) /  ___   __ _  ___   ___ _  / _/_ __/ /___ _________ 
+ | |/ / / _ \/ -_) /  ' \/ -_) / _ `/ / _/ // / __/ // / __/ -_)
+ |___/_/_.__/\__/ /_/_/_/\__/  \_,_/ /_/ \_,_/\__/\_,_/_/  \__/ 
+                                                                
+    """
 
 # ========== 主程序 ==========
 
@@ -143,15 +113,15 @@ def roles(role_name):
             else:
                 pass  # 记忆文件不存在，静默处理
         except Exception as e:
-                pass  # 加载失败，静默处理
+            pass  # 加载失败，静默处理
     
     # ========== 第二步：获取基础人格设定 ==========
     role_personality = {
-        "我": """
+        "悠扬": """
         【人格特征】
         你是一个大学生：
         - **外向开朗**：你总是喜欢"哈哈哈哈"等大笑表达来展现自己的情绪
-        - **热爱学习**：你总是讨论中国美术学院艺术与科技专业的事情
+        - **灵活应变**：你善于说一些似真似假的话
         - **混合口音**：你会在谈话中掺杂日语或者方言来增添乐趣
         
         【语言风格】
@@ -164,7 +134,7 @@ def roles(role_name):
         - 声音高昂,说话前喜欢先笑两声
         - 避免直接拒绝或反驳
         """
-            }
+    }
     
     personality = role_personality.get(role_name, "你是一个普通的人，没有特殊角色特征。")
     
@@ -175,11 +145,11 @@ def roles(role_name):
     # 如果有外部记忆，优先使用记忆内容
     if memory_content:
         role_prompt_parts.append(f"""【你的说话风格示例】
-以下是你说过的话，你必须模仿这种说话风格和语气：
+        以下是你说过的话，你必须模仿这种说话风格和语气：
 
-{memory_content}
+        {memory_content}
 
-在对话中，你要自然地使用类似的表达方式和语气。""")
+        在对话中，你要自然地使用类似的表达方式和语气。""")
     
     # 添加人格设定
     role_prompt_parts.append(f"【角色设定】\n{personality}")
@@ -208,8 +178,8 @@ break_message = """【结束对话规则 - 系统级强制规则】
 
 # ========== Streamlit Web 界面 ==========
 st.set_page_config(
-    page_title="👉我之由来",
-    page_icon="👉",
+    page_title="你好悠扬",
+    page_icon="🌼",
     layout="wide"
 )
 
@@ -222,7 +192,7 @@ if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
 # 页面标题
-st.title("👉我之由来")
+st.title("你好🌼悠扬")
 st.markdown("---")
 
 # 侧边栏：角色选择和设置
@@ -232,8 +202,8 @@ with st.sidebar:
     # 角色选择
     selected_role = st.selectbox(
         "选择角色",
-        ["我"],
-        index=0 if st.session_state.selected_role == "我" else 1
+        ["悠扬"],
+        index=0 if st.session_state.selected_role == "悠扬" else 1
     )
     
     # 如果角色改变，重新初始化对话
@@ -315,6 +285,9 @@ if user_input:
                     st.info("对话已结束")
                     st.stop()
                     
+            except Exception as e:
+                st.error(f"发生错误: {e}")
+                st.session_state.conversation_history.pop()  # 移除失败的用户消息
             except Exception as e:
                 st.error(f"发生错误: {e}")
                 st.session_state.conversation_history.pop()  # 移除失败的用户消息
