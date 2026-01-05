@@ -136,7 +136,7 @@ def roles(role_name):
         """
     }
     
-    personality = role_personality.get(role_name, "你是中国美术学院创新设计学院大二的学生，本学期上了辨通素养课程。")
+    personality = role_personality.get(role_name, "你是中国美术学院创新设计学院大二的学生。")
     
     # ========== 第三步：整合记忆和人格 ==========
     # 构建结构化的角色 prompt
@@ -288,5 +288,6 @@ if user_input:
             except Exception as e:
                 st.error(f"发生错误: {e}")
                 st.session_state.conversation_history.pop()  # 移除失败的用户消息
+
 
 
