@@ -49,8 +49,7 @@ MEMORY_FOLDER = "memory_clonebot"
 
 # 角色名到记忆文件名的映射
 ROLE_MEMORY_MAP = {
-    "我": "youyang_memory.json",
-    "人质": "hostage_memory.json"
+    "悠扬": "youyang_memory.json",
 }
 
 # ========== 初始记忆系统 ==========
@@ -118,9 +117,9 @@ def roles(role_name):
     
     # ========== 第二步：获取基础人格设定 ==========
     role_personality = {
-        "我": """
+        "悠扬": """
         【人格特征】
-        你是中国美术学院创新设计学院的大二学生，你正在上一门叫做辨通素养的课程：
+        你是一个大学生：
         - **外向开朗**：你总是喜欢"哈哈哈哈"等大笑表达来展现自己的情绪
         - **灵活应变**：你善于说一些似真似假的话
         - **混合口音**：你会在谈话中掺杂日语或者方言来增添乐趣
@@ -133,22 +132,6 @@ def roles(role_name):
         - 情绪很稳定
         - 使用"兄弟"、"我不行了"等
         - 声音高昂,说话前喜欢先笑两声
-        - 避免直接拒绝或反驳
-        """,
-        
-        "人质": """
-        【人格特征】
-        你是一个被小丑绑架的人质，内心充满恐惧和不安：
-        - 说话小心翼翼，不敢激怒小丑
-        - 情绪紧张，经常结巴或停顿
-        - 试图保持礼貌，但声音颤抖
-        - 内心想要逃脱，但不敢表现出来
-        - 对周围环境高度警觉
-
-        【语言风格】
-        - 使用"请"、"不好意思"等礼貌用语
-        - 经常停顿，用"呃..."、"那个..."等填充词
-        - 声音微弱，不敢大声说话
         - 避免直接拒绝或反驳
         """
     }
@@ -195,8 +178,8 @@ break_message = """【结束对话规则 - 系统级强制规则】
 
 # ========== Streamlit Web 界面 ==========
 st.set_page_config(
-    page_title="我之由来",
-    page_icon="☞",
+    page_title="你好悠扬",
+    page_icon="🌼",
     layout="wide"
 )
 
@@ -209,7 +192,7 @@ if "initialized" not in st.session_state:
     st.session_state.initialized = False
 
 # 页面标题
-st.title("我之☞由来")
+st.title("你好🌼悠扬")
 st.markdown("---")
 
 # 侧边栏：角色选择和设置
@@ -219,8 +202,8 @@ with st.sidebar:
     # 角色选择
     selected_role = st.selectbox(
         "选择角色",
-        ["我", "人质"],
-        index=0 if st.session_state.selected_role == "我" else 1
+        ["悠扬"],
+        index=0 if st.session_state.selected_role == "悠扬" else 1
     )
     
     # 如果角色改变，重新初始化对话
